@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Be My Valentine ❤️</title>
+
+<style>
+  :root{
+    --bg-overlay: rgba(255, 192, 203, 0.10);
+    --card-bg: rgba(255, 245, 250, 0.92); /* very light pink/white */
+    --card-border: rgba(255, 182, 193, 0.35);
+    --text: #3a2a2a;
+    --muted: #7a5c6a;
+    --shadow: 0 12px 32px rgba(255, 182, 193, 0.18);
+    --accent: #e75480;
+    --accent2: #ffb6c1;
+    --btn-dark: rgba(255, 182, 193, 0.18);
+  }
+
+  *{ box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    display: grid;
+    place-items: center;
+    background: url("bg.jpg") no-repeat center center / cover;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Dark overlay + subtle vignette for "classy" */
+  body::before{
+    content:"";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(1200px 600px at 50% 35%, rgba(255, 192, 203, 0.13), transparent 55%),
+      linear-gradient(180deg, rgba(255, 182, 193, 0.10), rgba(255, 182, 193, 0.18)),
+      var(--bg-overlay);
+    z-index: 0;
+  }
+
+  .container {
+    width: min(520px, 92vw);
+    padding: 26px 22px;
+    border-radius: 24px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+
+    background: var(--card-bg);
+    border: 1.5px solid var(--card-border);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+
+    transform: translateY(0);
+    transition: opacity .35s ease, transform .35s ease;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .title{
+    margin: 6px 0 12px;
+    font-size: clamp(1.35rem, 2.7vw, 1.9rem);
+    line-height: 1.2;
+    color: var(--text);
+    letter-spacing: 0.2px;
+  }
+
+  .subtitle{
+    margin: 0 0 16px;
+    color: var(--muted);
+    font-size: 0.98rem;
+    line-height: 1.55;
+  }
+
+  .divider{
+    height: 1px;
+    width: 100%;
+    margin: 18px 0 16px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  }
+
+  .btnRow{
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  button {
+    padding: 12px 18px;
+    font-size: 0.98rem;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .2s ease, background .2s ease, opacity .2s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button:active { transform: scale(0.98); }
+
+  .yesBtn{
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    box-shadow: 0 8px 24px rgba(231, 84, 128, 0.18);
+  }
+
+  .yesBtn:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(231, 84, 128, 0.28);
+  }
+
+  .noBtn{
+    color: var(--accent);
+    background: #fff0f6;
+    border: 1.5px solid var(--accent2);
+    position: relative;
+  }
+
+  .noBtn:hover{
+    background: #ffe4ec;
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  /* Page 2 letter formatting */
+  .letter{
+    text-align: left;
+    color: var(--text);
+    font-size: 1.04rem;
+    line-height: 1.7;
+    padding: 16px 16px;
+    border-radius: 16px;
+    background: #fff7fa;
+    border: 1.5px solid var(--card-border);
+  }
+
+  .letter .to{
+    font-weight: 650;
+    color: rgba(185, 29, 42, 0.932);
+    letter-spacing: 0.2px;
+    margin-bottom: 10px;
+  }
+
+  .signature{
+    margin-top: 12px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* Page 3 image */
+  #page3 img{
+    width: 100%;
+    border-radius: 18px;
+    margin-top: 10px;
+    border: 1px solid rgba(255,255,255,0.20);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+  }
+
+  /* Floating particles (more subtle than your original) */
+  .float {
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.9;
+    filter: drop-shadow(0 10px 18px rgba(0,0,0,0.25));
+    animation: floatUp 7s linear forwards;
+    will-change: transform, opacity;
+  }
+
+  @keyframes floatUp {
+    0%   { transform: translateY(105vh) scale(0.95); opacity: 0; }
+    10%  { opacity: 0.95; }
+    100% { transform: translateY(-12vh) scale(1.22); opacity: 0; }
+  }
+
+  /* Small top-right badge vibe */
+  .badge{
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 0.9rem;
+    color: rgba(236, 136, 220, 0.85);
+    background: rgba(233, 220, 220, 0.1);
+    border: 1px solid rgba(224, 61, 129, 0.116);
+    padding: 8px 12px;
+    border-radius: 999px;
+    backdrop-filter: blur(12px);
+  }
+
+  /* Make everything feel smooth on page transitions */
+  .fadeIn{
+    animation: fadeIn .35s ease both;
+  }
+  @keyframes fadeIn{
+    from{ opacity: 0; transform: translateY(10px); }
+    to{ opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+
+<body>
+  <div class="badge">Valentine Mode 💘</div>
+
+  <audio id="music" src="music.mp3" loop></audio>
+
+  <!-- Page 1 -->
+  <div class="container fadeIn" id="page1">
+    <h1 class="title">Will you be my Forever Valentine? ❤️</h1>
+    <p class="subtitle">I’m asking nicely. Like… ridiculously nicely.</p>
+
+    <div class="divider"></div>
+
+    <div class="btnRow">
+      <button class="yesBtn" id="yes1">Yes 💖</button>
+      <button class="noBtn" id="noBtn">No 💔</button>
+    </div>
+  </div>
+
+  <!-- Page 2 -->
+  <div class="container hidden" id="page2">
+    <h1 class="title">💌 For Miraz</h1>
+
+    <div class="letter">
+      <div class="to"> Dear Husband😘</div>
+
+      
+      Every smile,  every little moment we share makes my world brighter.<br><br>
+
+       I just want to say thank you for being my daily-life tech support, my career motivator, for letting me follow my dreams, for handling my random overthinking sessions, and for being a professional problem solver. Life with you is chaotic, funny, and somehow it always works out.
+
+We’ve walked a long road together and faced so many ups and downs, and I’m grateful that we always chose to hold on to each other. Having clear goals and walking toward them together makes this journey meaningful. I appreciate the kindness, patience, and light you bring into my life every day. 
+Valobashi tomake Ayatir abbu ❤️
+      <div class="signature">
+        Forever yours,<br>
+        Adhora 💕<br><br>
+        Happy Valentine's Day ❤️
+      </div>
+    </div>
+
+    <div class="btnRow" style="margin-top:16px;">
+      <button class="yesBtn" id="yes2">Next 💖</button>
+    </div>
+  </div>
+
+  <!-- Page 3 -->
+  <div class="container hidden" id="page3">
+    <h1 class="title">Do you remember that day we meet? 💖</h1>
+    <p class="subtitle">  💖 </p>
+    <img src="custom.JPG" alt="Custom Picture">
+  </div>
+
+<script>
+  const page1 = document.getElementById("page1");
+  const page2 = document.getElementById("page2");
+  const page3 = document.getElementById("page3");
+
+  const noBtn = document.getElementById("noBtn");
+  const yes1 = document.getElementById("yes1");
+  const yes2 = document.getElementById("yes2");
+  const music = document.getElementById("music");
+
+  function showPage(hideEl, showEl){
+    hideEl.classList.add("hidden");
+    showEl.classList.remove("hidden");
+    showEl.classList.remove("fadeIn"); // restart animation
+    void showEl.offsetWidth;           // reflow trick
+    showEl.classList.add("fadeIn");
+  }
+
+  // NO button moves away on hover/touch
+  function moveNoButton() {
+    noBtn.style.position = "fixed";
+    const pad = 16;
+    const btnW = 130;
+    const btnH = 58;
+    const x = Math.random() * (window.innerWidth - btnW - pad) + pad;
+    const y = Math.random() * (window.innerHeight - btnH - pad) + pad;
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+  }
+
+  noBtn.addEventListener("mouseenter", moveNoButton);
+  noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNoButton(); }, { passive: false });
+
+  // Subtle floating hearts (always), roses only after YES
+  const hearts = ["💖","💕","💘","💞"];
+  let roseInterval = null;
+
+  function floatEmoji(emoji){
+    const el = document.createElement("div");
+    el.className = "float";
+    el.textContent = emoji;
+
+    el.style.left = Math.random() * window.innerWidth + "px";
+    el.style.fontSize = (16 + Math.random()*18) + "px";
+    el.style.animationDuration = (6.2 + Math.random()*2.2) + "s";
+
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 9000);
+  }
+
+  // hearts (slower + classier)
+  setInterval(() => floatEmoji(hearts[Math.floor(Math.random()*hearts.length)]), 750);
+
+  function startRoses(){
+    if (roseInterval) return;
+    roseInterval = setInterval(() => floatEmoji("𓍢🌷͙֒"), 650);
+  }
+
+  // Page transitions
+  yes1.addEventListener("click", async () => {
+    // Some browsers block autoplay unless user gesture — this click counts ✅
+    try { await music.play(); } catch(e) {}
+    showPage(page1, page2);
+    startRoses();
+  });
+
+  yes2.addEventListener("click", () => {
+    showPage(page2, page3);
+  });
+</script>
+
+</body>
+</html>
